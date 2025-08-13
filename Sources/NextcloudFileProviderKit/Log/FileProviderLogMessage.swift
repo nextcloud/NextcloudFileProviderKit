@@ -7,25 +7,25 @@ public struct FileProviderLogMessage: Encodable {
     ///
     /// As used with `Logger` of the `os` framework.
     ///
-    let category: String
+    public let category: String
 
     ///
     /// Time of the message to write.
     ///
-    let date: String
+    public let date: String
 
     ///
     /// Textual representation of the associated `OSLogType`.
     ///
-    let level: String
+    public let level: String
 
     ///
     /// The actual text for the entry.
     ///
-    let message: String
+    public let message: String
 
     ///
     /// As used with `Logger` of the `os` framework.
     ///
-    let subsystem: String
+    public let subsystem: String
 }
