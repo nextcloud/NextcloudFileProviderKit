@@ -14,3 +14,11 @@ However, the capabilities of the `files_lock` server app are used to lock the fi
 
 - ``isLockFileName(_:)``
 - ``originalFileName(fromLockFileName:)``
+
+### Logging
+
+This package comes with its own reusable logging solution which builds on top of the unified logging system provided by the platform and a JSON lines based file logging.
+
+- ``FileProviderLog``
+- ``FileProviderLogger``
+- ``FileProviderLogMessage``
