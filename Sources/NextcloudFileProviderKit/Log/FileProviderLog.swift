@@ -9,6 +9,9 @@ import os
 /// > To Do: Consider using macros for the calls so the calling functions and files can be recorded, too!
 ///
 public actor FileProviderLog {
+    ///
+    /// JSON encoder for ``FileProviderLogMessage`` values.
+    ///
     let encoder: JSONEncoder
 
     ///
