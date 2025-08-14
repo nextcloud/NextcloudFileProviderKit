@@ -99,7 +99,7 @@ public actor FileProviderLog {
     ///
     /// Usually, you do not need or want to use this but the methods provided by ``FileProviderLogger`` instead.
     ///
-    public func write(category: String, level: OSLogType, message: String) {
+    public func write(category: String, level: OSLogType, message: String, details: [String: String]) {
         logger.log(level: level, "\(message, privacy: .public)")
 
         guard let handle else {
@@ -126,9 +126,10 @@ public actor FileProviderLog {
 
         let date = Date()
         let formattedDate = formatter.string(from: date)
+        let entry = FileProviderLogMessage(category: category, date: formattedDate, details: details, level: levelDescription, message: message, subsystem: subsystem)
 
         do {
-            let object = try encoder.encode(FileProviderLogMessage(category: category, date: formattedDate, level: levelDescription, message: message, subsystem: subsystem))
+            let object = try encoder.encode(entry)
             try handle.write(contentsOf: object)
         } catch {
             logger.error("Failed to encode and write message: \(message, privacy: .public)!")

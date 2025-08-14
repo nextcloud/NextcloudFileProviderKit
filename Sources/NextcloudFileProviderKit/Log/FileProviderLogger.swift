@@ -31,36 +31,36 @@ public actor FileProviderLogger {
     ///
     /// Dispatch a task to write a message with the level `OSLogType.debug`.
     ///
-    public nonisolated func debug(_ message: String) {
+    public nonisolated func debug(_ message: String, _ details: [String: String] = [:]) {
         Task {
-            await log.write(category: category, level: .debug, message: message)
+            await log.write(category: category, level: .debug, message: message, details: details)
         }
     }
 
     ///
     /// Dispatch a task to write a message with the level `OSLogType.info`.
     ///
-    public nonisolated func info(_ message: String) {
+    public nonisolated func info(_ message: String, _ details: [String: String] = [:]) {
         Task {
-            await log.write(category: category, level: .info, message: message)
+            await log.write(category: category, level: .info, message: message, details: details)
         }
     }
 
     ///
     /// Dispatch a task to write a message with the level `OSLogType.error`.
     ///
-    public nonisolated func error(_ message: String) {
+    public nonisolated func error(_ message: String, _ details: [String: String] = [:]) {
         Task {
-            await log.write(category: category, level: .error, message: message)
+            await log.write(category: category, level: .error, message: message, details: details)
         }
     }
 
     ///
     /// Dispatch a task to write a message with the level `OSLogType.fault`.
     ///
-    public nonisolated func fault(_ message: String) {
+    public nonisolated func fault(_ message: String, _ details: [String: String] = [:]) {
         Task {
-            await log.write(category: category, level: .fault, message: message)
+            await log.write(category: category, level: .fault, message: message, details: details)
         }
     }
 }

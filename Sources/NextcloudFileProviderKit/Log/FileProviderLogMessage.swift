@@ -1,7 +1,7 @@
 import Foundation
 
 ///
-/// A data model for the JSON object to be written into the JSON lines log files.
+/// A data model for the rich JSON object to be written into the JSON lines log files.
 ///
 public struct FileProviderLogMessage: Encodable {
     ///
@@ -13,6 +13,14 @@ public struct FileProviderLogMessage: Encodable {
     /// Time of the message to write.
     ///
     public let date: String
+
+    ///
+    /// An optional dictionary of additional metadata related ot the message.
+    ///
+    /// This is intended to improve the filter possibilities in logs by structuring the messages in more detail.
+    /// By providing contextual identifiers, the generic stream of messages can be filtered centered around individual subjects like file provider items or similar.
+    ///
+    public let details: [String: String]
 
     ///
     /// Textual representation of the associated `OSLogType`.
