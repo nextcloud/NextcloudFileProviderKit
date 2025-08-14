@@ -7,7 +7,6 @@
 
 import FileProvider
 import Foundation
-import OSLog
 
 public class FileProviderChangeNotificationInterface: ChangeNotificationInterface {
     let domain: NSFileProviderDomain

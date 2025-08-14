@@ -10,7 +10,6 @@ import FileProvider
 import Foundation
 import NextcloudCapabilitiesKit
 import NextcloudKit
-import OSLog
 
 public let NotifyPushAuthenticatedNotificationName = Notification.Name("NotifyPushAuthenticated")
 

@@ -9,7 +9,6 @@ import FileProvider
 import Foundation
 import NextcloudCapabilitiesKit
 import NextcloudKit
-import OSLog
 
 public extension Item {
 

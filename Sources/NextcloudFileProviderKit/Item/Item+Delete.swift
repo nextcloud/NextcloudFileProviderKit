@@ -9,7 +9,6 @@ import FileProvider
 import Foundation
 import NextcloudCapabilitiesKit
 import NextcloudKit
-import OSLog
 
 public extension Item {
     // NOTE: The trashing parameter does not affect whether the server will trash this or not.

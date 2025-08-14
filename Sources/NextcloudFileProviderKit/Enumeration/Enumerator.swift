@@ -14,7 +14,6 @@
 
 import FileProvider
 import NextcloudKit
-import OSLog
 
 public class Enumerator: NSObject, NSFileProviderEnumerator {
     let enumeratedItemIdentifier: NSFileProviderItemIdentifier

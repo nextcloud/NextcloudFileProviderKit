@@ -14,7 +14,6 @@
 
 import FileProvider
 import NextcloudKit
-import OSLog
 
 extension Enumerator {
     static func handlePagedReadResults(

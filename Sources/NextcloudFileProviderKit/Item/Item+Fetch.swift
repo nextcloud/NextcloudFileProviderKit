@@ -8,7 +8,6 @@
 import FileProvider
 import Foundation
 import NextcloudKit
-import OSLog
 
 public extension Item {
     private func fetchDirectoryContents(

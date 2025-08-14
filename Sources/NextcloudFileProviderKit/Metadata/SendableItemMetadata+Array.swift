@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import OSLog
 
 extension Array<SendableItemMetadata> {
     func toFileProviderItems(

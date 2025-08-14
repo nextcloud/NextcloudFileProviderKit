@@ -8,7 +8,6 @@
 import FileProvider
 import Foundation
 import NextcloudKit
-import OSLog
 
 fileprivate let logger = Logger(subsystem: Logger.subsystem, category: "thumbnails")
 

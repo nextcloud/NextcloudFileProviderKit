@@ -10,7 +10,6 @@ import FileProvider
 import Foundation
 import NextcloudCapabilitiesKit
 import NextcloudKit
-import OSLog
 
 fileprivate let logger = Logger(
     subsystem: Logger.subsystem, category: "NextcloudKitRemoteInterface"

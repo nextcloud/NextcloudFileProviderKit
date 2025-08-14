@@ -9,7 +9,6 @@ import Alamofire
 import Foundation
 import NextcloudCapabilitiesKit
 import NextcloudKit
-import OSLog
 import RealmSwift
 
 let defaultFileChunkSize = 104_857_600 // 100 MiB

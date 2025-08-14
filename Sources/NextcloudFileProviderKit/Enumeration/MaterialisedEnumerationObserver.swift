@@ -14,7 +14,6 @@
 
 import FileProvider
 import Foundation
-import OSLog
 import RealmSwift
 
 public class MaterialisedEnumerationObserver: NSObject, NSFileProviderEnumerationObserver {

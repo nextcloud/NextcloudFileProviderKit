@@ -14,7 +14,6 @@
 
 import FileProvider
 import Foundation
-import OSLog
 
 fileprivate let lfuLogger = Logger(subsystem: Logger.subsystem, category: "localfileutils")
 

@@ -7,7 +7,6 @@
 
 import Alamofire
 import Foundation
-import OSLog
 
 fileprivate let logger = Logger(subsystem: Logger.subsystem, category: "enumeratorpageresponse")
 

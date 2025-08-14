@@ -14,7 +14,6 @@
 
 import FileProvider
 import Foundation
-import OSLog
 import RealmSwift
 
 internal let stable1_0SchemaVersion: UInt64 = 100

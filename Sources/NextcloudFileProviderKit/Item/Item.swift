@@ -15,7 +15,6 @@
 import FileProvider
 import NextcloudKit
 import UniformTypeIdentifiers
-import OSLog
 
 public class Item: NSObject, NSFileProviderItem {
     public enum FileProviderItemTransferError: Error {
