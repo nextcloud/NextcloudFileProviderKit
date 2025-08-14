@@ -20,7 +20,7 @@ public struct FileProviderLogMessage: Encodable {
     /// This is intended to improve the filter possibilities in logs by structuring the messages in more detail.
     /// By providing contextual identifiers, the generic stream of messages can be filtered centered around individual subjects like file provider items or similar.
     ///
-    public let details: [String: String]
+    public let details: [String: FileProviderLogDetail?]
 
     ///
     /// Textual representation of the associated `OSLogType`.
@@ -36,4 +36,20 @@ public struct FileProviderLogMessage: Encodable {
     /// As used with `Logger` of the `os` framework.
     ///
     public let subsystem: String
+
+    ///
+    /// Custom initializer to support arbitrary types as detail values.
+    ///
+    init(category: String, date: String, details: [String : Any?], level: String, message: String, subsystem: String) {
+        self.category = category
+        self.date = date
+
+        for key in details.keys {
+            self.details[key] = FileProviderLogDetail(details[key] as Any?)
+        }
+
+        self.level = level
+        self.message = message
+        self.subsystem = subsystem
+    }
 }

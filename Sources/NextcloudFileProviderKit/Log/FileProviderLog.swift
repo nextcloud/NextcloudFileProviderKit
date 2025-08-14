@@ -82,7 +82,7 @@ public actor FileProviderLog {
         let creationDate = Date()
         let formattedDate = formatter.string(from: creationDate)
         let processIdentifier = ProcessInfo.processInfo.processIdentifier
-        let name = "File Provider Domain \(fileProviderDomainIdentifier) (\(creationDate); Process \(processIdentifier)).log.jsonl"
+        let name = "File Provider Domain \(fileProviderDomainIdentifier) (\(formattedDate); Process \(processIdentifier)).log.jsonl"
         let file = logsDirectory.appendingPathComponent(name, isDirectory: false)
         self.file = file
 
@@ -99,8 +99,12 @@ public actor FileProviderLog {
     ///
     /// Usually, you do not need or want to use this but the methods provided by ``FileProviderLogger`` instead.
     ///
-    public func write(category: String, level: OSLogType, message: String, details: [String: String]) {
-        logger.log(level: level, "\(message, privacy: .public)")
+    public func write(category: String, level: OSLogType, message: String, details: [String: Any?]) {
+        let detailsDescription = details.map { key, value in
+            "\(key): \(value ?? "nil")\n"
+        }
+
+        logger.log(level: level, "\(message, privacy: .public)\n\n\(detailsDescription)")
 
         guard let handle else {
             return

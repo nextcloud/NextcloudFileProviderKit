@@ -42,7 +42,7 @@ public final class FilesDatabaseManager: Sendable {
     }
 
     private static let schemaVersion = stable2_0SchemaVersion
-    static let logger = Logger(subsystem: Logger.subsystem, category: "filesdatabase")
+    static let logger = FileProviderLogger(category: "FilesDatabaseManager", log: <#T##FileProviderLog#>)
     let account: Account
 
     var itemMetadatas: Results<RealmItemMetadata> { ncDatabase().objects(RealmItemMetadata.self) }
@@ -65,7 +65,7 @@ public final class FilesDatabaseManager: Sendable {
             _ = try Realm()
             Self.logger.info("Successfully started Realm db for NextcloudFileProviderKit")
         } catch let error {
-            Self.logger.error("Error opening Realm db: \(error, privacy: .public)")
+            Self.logger.error("Error opening Realm db: \(error)")
         }
 
         // Migrate from old unified database to new per-account DB
@@ -79,7 +79,7 @@ public final class FilesDatabaseManager: Sendable {
             return
         }
         Self.logger.info(
-            "Migrating old database to database for \(account.ncKitAccount, privacy: .public)"
+            "Migrating old database to database for \(account.ncKitAccount)"
         )
         let oldConfig = Realm.Configuration(
             fileURL: oldDatabasePath,
@@ -102,13 +102,7 @@ public final class FilesDatabaseManager: Sendable {
                 remoteFileChunks.forEach { currentRealm.create(RemoteFileChunk.self, value: $0) }
             }
         } catch let error {
-            Self.logger.error(
-                """
-                Error migrating old database to account-specific database
-                    for: \(account.ncKitAccount, privacy: .public)
-                    Received error: \(error, privacy: .public)
-                """
-            )
+            Self.logger.error("Migrating old database to account-specific database for \(account.ncKitAccount) because: \(error)")
         }
     }
 
@@ -129,9 +123,7 @@ public final class FilesDatabaseManager: Sendable {
                 ofItemAtPath: dbFolderPath
             )
         } catch {
-            Self.logger.error(
-                "Could not set permission level for db folder: \(error, privacy: .public)"
-            )
+            Self.logger.error("Could not set permission level for db folder: \(error)")
         }
 
         let config = Realm.Configuration(
@@ -238,15 +230,12 @@ public final class FilesDatabaseManager: Sendable {
 
             deletedMetadatas.append(metadataToDelete)
 
-            Self.logger.debug(
-                """
-                Deleting item metadata during update.
-                    ocID: \(existingMetadata.ocId, privacy: .public)
-                    etag: \(existingMetadata.etag, privacy: .public)
-                    fileName: \(existingMetadata.fileName, privacy: .public)"
-                    syncTime: \(existingMetadata.syncTime, privacy: .public)
-                """
-            )
+            Self.logger.debug("Deleting item metadata during update.", [
+                "ocID": existingMetadata.ocId,
+                "etag": existingMetadata.etag,
+                "fileName": existingMetadata.fileName,
+                "syncTime": existingMetadata.syncTime.description
+            ])
         }
 
         return deletedMetadatas
@@ -287,56 +276,47 @@ public final class FilesDatabaseManager: Sendable {
 
                     returningUpdatedMetadatas.append(updatedMetadata)
 
-                    Self.logger.debug(
-                        """
-                        Updated existing item metadata.
-                            ocID: \(updatedMetadata.ocId, privacy: .public)
-                            etag: \(updatedMetadata.etag, privacy: .public)
-                            fileName: \(updatedMetadata.fileName, privacy: .public)
-                            syncTime: \(updatedMetadata.syncTime, privacy: .public)
-                        """
-                    )
+                    Self.logger.debug("Updated existing item metadata.", [
+                        "ocID": updatedMetadata.ocId,
+                        "etag": updatedMetadata.etag,
+                        "fileName": updatedMetadata.fileName,
+                        "syncTime": updatedMetadata.syncTime.description,
+                    ])
                 } else {
-                    Self.logger.debug(
-                        """
-                        Skipping item metadata update; same as existing, or still in transit.
-                            ocID: \(updatedMetadata.ocId, privacy: .public)
-                            etag: \(updatedMetadata.etag, privacy: .public)
-                            fileName: \(updatedMetadata.fileName, privacy: .public)
-                            syncTime: \(updatedMetadata.syncTime, privacy: .public)
-                        """
-                    )
+                    Self.logger.debug("Skipping item metadata update; same as existing, or still in transit.", [
+                        "ocID": updatedMetadata.ocId,
+                        "etag": updatedMetadata.etag,
+                        "fileName": updatedMetadata.fileName,
+                        "syncTime": updatedMetadata.syncTime.description,
+                    ])
                 }
 
             } else { // This is a new metadata
                 returningNewMetadatas.append(updatedMetadata)
 
-                Self.logger.debug(
-                    """
-                    Created new item metadata during update.
-                        ocID: \(updatedMetadata.ocId, privacy: .public)
-                        etag: \(updatedMetadata.etag, privacy: .public)
-                        fileName: \(updatedMetadata.fileName, privacy: .public)
-                        parentDirectoryUrl: \(updatedMetadata.serverUrl, privacy: .public)
-                        account: \(updatedMetadata.account, privacy: .public)
-                        content type: \(updatedMetadata.contentType, privacy: .public)
-                        is directory: \(updatedMetadata.directory, privacy: .public)
-                        creation date: \(updatedMetadata.creationDate, privacy: .public)
-                        date: \(updatedMetadata.date, privacy: .public)
-                        lock: \(updatedMetadata.lock, privacy: .public)
-                        lockTimeOut: \(updatedMetadata.lockTimeOut?.description ?? "", privacy: .public)
-                        lockOwner: \(updatedMetadata.lockOwner ?? "", privacy: .public)
-                        permissions: \(updatedMetadata.permissions, privacy: .public)
-                        size: \(updatedMetadata.size, privacy: .public)
-                        trashbinFileName: \(updatedMetadata.trashbinFileName, privacy: .public)
-                        downloaded: \(updatedMetadata.downloaded, privacy: .public)
-                        uploaded: \(updatedMetadata.uploaded, privacy: .public)
-                        visitedDirectory: \(updatedMetadata.visitedDirectory, privacy: .public)
-                        keepDownloaded: \(updatedMetadata.keepDownloaded, privacy: .public)
-                        deleted: \(updatedMetadata.deleted, privacy: .public)
-                        syncTime: \(updatedMetadata.syncTime, privacy: .public)
-                    """
-                )
+                Self.logger.debug("Created new item metadata during update.", [
+                    "ocID": updatedMetadata.ocId,
+                    "etag": updatedMetadata.etag,
+                    "fileName": updatedMetadata.fileName,
+                    "parentDirectoryUrl": updatedMetadata.serverUrl,
+                    "account": updatedMetadata.account,
+                    "contentType": updatedMetadata.contentType,
+                    "directory": updatedMetadata.directory,
+                    "creation date": updatedMetadata.creationDate,
+                    "date": updatedMetadata.date,
+                    "lock": updatedMetadata.lock,
+                    "lockTimeOut": updatedMetadata.lockTimeOut?.description,
+                    "lockOwner": updatedMetadata.lockOwner,
+                    "permissions": updatedMetadata.permissions,
+                    "size": updatedMetadata.size,
+                    "trashbinFileName": updatedMetadata.trashbinFileName,
+                    "downloaded": updatedMetadata.downloaded,
+                    "uploaded": updatedMetadata.uploaded,
+                    "visitedDirectory": updatedMetadata.visitedDirectory,
+                    "keepDownloaded": updatedMetadata.keepDownloaded,
+                    "deleted": updatedMetadata.deleted,
+                    "syncTime": updatedMetadata.syncTime,
+                ])
             }
         }
 
@@ -428,7 +408,7 @@ public final class FilesDatabaseManager: Sendable {
                     if existing.status == Status.normal.rawValue,
                        !existing.isInSameDatabaseStoreableRemoteState(readTargetMetadata)
                     {
-                        Self.logger.info("Depth 1 read target changed: \(readTargetMetadata.ocId, privacy: .public)")
+                        Self.logger.info("Depth 1 read target changed: \(readTargetMetadata.ocId)")
                         if keepExistingDownloadState {
                             readTargetMetadata.downloaded = existing.downloaded
                         }
@@ -436,7 +416,7 @@ public final class FilesDatabaseManager: Sendable {
                         metadatasToUpdate.insert(readTargetMetadata, at: 0)
                     }
                 } else {
-                    Self.logger.info("Depth 1 read target is new: \(readTargetMetadata.ocId, privacy: .public)")
+                    Self.logger.info("Depth 1 read target is new: \(readTargetMetadata.ocId)")
                     metadatasToCreate.insert(readTargetMetadata, at: 0)
                 }
             }
@@ -450,12 +430,7 @@ public final class FilesDatabaseManager: Sendable {
 
             return (metadatasToCreate, metadatasToUpdate, metadatasToDelete)
         } catch {
-            Self.logger.error(
-                """
-                Could not update any item metadatas.
-                    Received error: \(error.localizedDescription, privacy: .public)
-                """
-            )
+            Self.logger.error("Could not update any item metadatas. Received error: \(error.localizedDescription)")
             return (nil, nil, nil)
         }
     }
@@ -466,12 +441,7 @@ public final class FilesDatabaseManager: Sendable {
         _ metadata: SendableItemMetadata, status: Status
     ) -> SendableItemMetadata? {
         guard let result = itemMetadatas.where({ $0.ocId == metadata.ocId }).first else {
-            Self.logger.debug(
-                """
-                Did not update status for item metadata as it was not found.
-                    ocID: \(metadata.ocId, privacy: .public)
-                """
-            )
+            Self.logger.debug("Did not update status for item metadata as it was not found. ocID: \(metadata.ocId)")
             return nil
         }
         
@@ -488,27 +458,21 @@ public final class FilesDatabaseManager: Sendable {
                     result.chunkUploadId = nil
                 }
 
-                Self.logger.debug(
-                    """
-                    Updated status for item metadata.
-                        ocID: \(metadata.ocId, privacy: .public)
-                        etag: \(metadata.etag, privacy: .public)
-                        fileName: \(metadata.fileName, privacy: .public)
-                        syncTime: \(metadata.syncTime, privacy: .public)
-                    """
-                )
+                Self.logger.debug("Updated status for item metadata.", [
+                        "ocID": metadata.ocId,
+                        "etag": metadata.etag,
+                        "fileName": metadata.fileName,
+                        "syncTime": metadata.syncTime,
+                ])
             }
             return SendableItemMetadata(value: result)
         } catch {
-            Self.logger.error(
-                """
-                Could not update status for item metadata.
-                    ocID: \(metadata.ocId, privacy: .public)
-                    etag: \(metadata.etag, privacy: .public)
-                    fileName: \(metadata.fileName, privacy: .public)
-                    received error: \(error.localizedDescription, privacy: .public)
-                """
-            )
+            Self.logger.error("Could not update status for item metadata.", [
+                    "ocID": metadata.ocId,
+                    "etag": metadata.etag,
+                    "fileName": metadata.fileName,
+                    "error": error.localizedDescription,
+            ])
         }
         
         return nil
@@ -520,44 +484,38 @@ public final class FilesDatabaseManager: Sendable {
         do {
             try database.write {
                 database.add(RealmItemMetadata(value: metadata), update: .all)
-                Self.logger.debug(
-                    """
-                    Added item metadata.
-                        ocID: \(metadata.ocId, privacy: .public)
-                        etag: \(metadata.etag, privacy: .public)
-                        fileName: \(metadata.fileName, privacy: .public)
-                        parentDirectoryUrl: \(metadata.serverUrl, privacy: .public)
-                        account: \(metadata.account, privacy: .public)
-                        content type: \(metadata.contentType, privacy: .public)
-                        is directory: \(metadata.directory, privacy: .public)
-                        creation date: \(metadata.creationDate, privacy: .public)
-                        date: \(metadata.date, privacy: .public)
-                        lock: \(metadata.lock, privacy: .public)
-                        lockTimeOut: \(metadata.lockTimeOut?.description ?? "", privacy: .public)
-                        lockOwner: \(metadata.lockOwner ?? "", privacy: .public)
-                        permissions: \(metadata.permissions, privacy: .public)
-                        size: \(metadata.size, privacy: .public)
-                        trashbinFileName: \(metadata.trashbinFileName, privacy: .public)
-                        downloaded: \(metadata.downloaded, privacy: .public)
-                        uploaded: \(metadata.uploaded, privacy: .public)
-                        visitedDirectory: \(metadata.visitedDirectory, privacy: .public)
-                        keepDownloaded: \(metadata.keepDownloaded, privacy: .public)
-                        deleted: \(metadata.deleted, privacy: .public)
-                        syncTime: \(metadata.syncTime, privacy: .public)
-                    """
-                )
+                Self.logger.debug("Added item metadata.", [
+                        "ocID": metadata.ocId,
+                        "etag": metadata.etag,
+                        "fileName": metadata.fileName,
+                        "parentDirectoryUrl": metadata.serverUrl,
+                        "account": metadata.account,
+                        "contentType": metadata.contentType,
+                        "directory": metadata.directory,
+                        "creationDate": metadata.creationDate,
+                        "date": metadata.date,
+                        "lock": metadata.lock,
+                        "lockTimeOut": metadata.lockTimeOut?.description,
+                        "lockOwner": metadata.lockOwner,
+                        "permissions": metadata.permissions,
+                        "size": metadata.size,
+                        "trashbinFileName": metadata.trashbinFileName,
+                        "downloaded": metadata.downloaded,
+                        "uploaded": metadata.uploaded,
+                        "visitedDirectory": metadata.visitedDirectory,
+                        "keepDownloaded": metadata.keepDownloaded,
+                        "deleted": metadata.deleted,
+                        "syncTime": metadata.syncTime,
+                ])
             }
         } catch {
-            Self.logger.error(
-                """
-                Could not add item metadata.
-                    ocID: \(metadata.ocId, privacy: .public)
-                    etag: \(metadata.etag, privacy: .public)
-                    fileName: \(metadata.fileName, privacy: .public)
-                    syncTime: \(metadata.syncTime, privacy: .public)
-                    received error: \(error.localizedDescription, privacy: .public)
-                """
-            )
+            Self.logger.error("Could not add item metadata.", [
+                    "ocID": metadata.ocId,
+                    "etag": metadata.etag,
+                    "fileName": metadata.fileName,
+                    "syncTime": metadata.syncTime,
+                    "error": error.localizedDescription,
+            ])
         }
     }
 
@@ -566,29 +524,19 @@ public final class FilesDatabaseManager: Sendable {
             let results = itemMetadatas.where { $0.ocId == ocId }
             let database = ncDatabase()
             try database.write {
-                Self.logger.debug("Deleting item metadata. \(ocId, privacy: .public)")
+                Self.logger.debug("Deleting item metadata. \(ocId)")
                 results.forEach { $0.deleted = true }
             }
             return true
         } catch {
-            Self.logger.error(
-                """
-                Could not delete item metadata with ocId: \(ocId, privacy: .public)
-                    Received error: \(error.localizedDescription, privacy: .public)
-                """
-            )
+            Self.logger.error("Could not delete item metadata with ocId \(ocId) due to error: \(error.localizedDescription)")
             return false
         }
     }
 
     public func renameItemMetadata(ocId: String, newServerUrl: String, newFileName: String) {
         guard let itemMetadata = itemMetadatas.where({ $0.ocId == ocId }).first else {
-            Self.logger.debug(
-                """
-                Could not find an item with ocID \(ocId, privacy: .public)
-                    to rename to \(newFileName, privacy: .public)
-                """
-            )
+            Self.logger.debug("Could not find an item with ocID \(ocId) to rename to \(newFileName)")
             return
         }
 
@@ -604,24 +552,10 @@ public final class FilesDatabaseManager: Sendable {
 
                 database.add(itemMetadata, update: .all)
 
-                Self.logger.debug(
-                    """
-                    Renamed item \(oldFileName, privacy: .public) 
-                    to \(newFileName, privacy: .public),
-                    moved from serverUrl: \(oldServerUrl, privacy: .public)
-                    to serverUrl: \(newServerUrl, privacy: .public)
-                    """
-                )
+                Self.logger.debug("Renamed item \(oldFileName) to \(newFileName), moved from serverUrl: \(oldServerUrl) to serverUrl: \(newServerUrl)")
             }
         } catch {
-            Self.logger.error(
-                """
-                Could not rename filename of item metadata with ocID: \(ocId, privacy: .public)
-                    to proposed name \(newFileName, privacy: .public)
-                    at proposed serverUrl \(newServerUrl, privacy: .public)
-                    received error: \(error.localizedDescription, privacy: .public)
-                """
-            )
+            Self.logger.error("Could not rename filename of item metadata with ocID: \(ocId) to proposed name \(newFileName) at proposed serverUrl \(newServerUrl) received error: \(error.localizedDescription)")
         }
     }
 
@@ -638,17 +572,15 @@ public final class FilesDatabaseManager: Sendable {
         }
 
         guard let parentDirectoryMetadata = parentDirectoryMetadataForItem(metadata) else {
-            Self.logger.error(
-                """
-                Could not get item parent directory item metadata for metadata.
-                    ocID: \(metadata.ocId, privacy: .public),
-                    etag: \(metadata.etag, privacy: .public), 
-                    fileName: \(metadata.fileName, privacy: .public),
-                    serverUrl: \(metadata.serverUrl, privacy: .public),
-                    account: \(metadata.account, privacy: .public),
-                    syncTime: \(metadata.syncTime, privacy: .public)
-                """
-            )
+            Self.logger.error("Could not get item parent directory item metadata for metadata.", [
+                    "ocID": metadata.ocId,
+                    "etag": metadata.etag,
+                    "fileName": metadata.fileName,
+                    "serverUrl": metadata.serverUrl,
+                    "account": metadata.account,
+                    "syncTime": metadata.syncTime,
+            ])
+
             return nil
         }
         return NSFileProviderItemIdentifier(parentDirectoryMetadata.ocId)
@@ -671,15 +603,12 @@ public final class FilesDatabaseManager: Sendable {
             depth: .target
         )
         guard error == nil, let parentMetadata = metadatas?.first else {
-            Self.logger.error(
-                """
-                Could not retrieve parent item identifier remotely, received error.
-                    target metadata: \(metadata.ocId, privacy: .public)
-                    target filename: \(metadata.fileName, privacy: .public)
-                    received metadatas: \(metadatas?.count ?? 0, privacy: .public)
-                    error: \(error?.errorDescription ?? "NO ERROR", privacy: .public)
-                """
-            )
+            Self.logger.error("Could not retrieve parent item identifier remotely, received error.", [
+                "targetMetadata": metadata.ocId,
+                "targetFilename": metadata.fileName,
+                "receivedMetadatas": metadatas?.count,
+                "error": error?.errorDescription,
+            ])
             return nil
         }
         return NSFileProviderItemIdentifier(parentMetadata.ocId)
@@ -713,11 +642,12 @@ public final class FilesDatabaseManager: Sendable {
                 return serverUrl
             }
             .forEach { serverUrl in
-                Self.logger.debug("Checking (updated) \(serverUrl, privacy: .public)")
+                Self.logger.debug("Checking (updated) \(serverUrl)")
+
                 itemMetadatas
                     .where { $0.serverUrl == serverUrl && $0.syncTime > date }
                     .forEach { metadata in
-                        Self.logger.debug("Checking item: \(metadata.fileName, privacy: .public)")
+                        Self.logger.debug("Checking item: \(metadata.fileName)")
                         guard !handledUpdateOcIds.contains(metadata.ocId) else { return }
                         handledUpdateOcIds.insert(metadata.ocId)
                         let sendableMetadata = SendableItemMetadata(value: metadata)
@@ -726,7 +656,7 @@ public final class FilesDatabaseManager: Sendable {
                         } else {
                             updated.append(sendableMetadata)
                         }
-                        Self.logger.debug("Appended item: \(metadata.fileName, privacy: .public)")
+                        Self.logger.debug("Appended item: \(metadata.fileName)")
                     }
             }
 
@@ -738,7 +668,8 @@ public final class FilesDatabaseManager: Sendable {
                 return serverUrl
             }
             .forEach { serverUrl in
-                Self.logger.debug("Checking (deletion) \(serverUrl, privacy: .public)")
+                Self.logger.debug("Checking (deletion) \(serverUrl)")
+
                 itemMetadatas
                     .where { $0.serverUrl.starts(with: serverUrl) && $0.syncTime > date }
                     .forEach { metadata in

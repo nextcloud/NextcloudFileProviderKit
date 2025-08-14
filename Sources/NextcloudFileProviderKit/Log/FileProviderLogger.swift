@@ -31,7 +31,11 @@ public actor FileProviderLogger {
     ///
     /// Dispatch a task to write a message with the level `OSLogType.debug`.
     ///
-    public nonisolated func debug(_ message: String, _ details: [String: String] = [:]) {
+    /// - Parameters:
+    ///     - message: The main text message of the entry in the logs.
+    ///     - details: Additional contextual data.
+    ///
+    public nonisolated func debug(_ message: String, _ details: [String: Any?] = [:]) {
         Task {
             await log.write(category: category, level: .debug, message: message, details: details)
         }
@@ -40,7 +44,11 @@ public actor FileProviderLogger {
     ///
     /// Dispatch a task to write a message with the level `OSLogType.info`.
     ///
-    public nonisolated func info(_ message: String, _ details: [String: String] = [:]) {
+    /// - Parameters:
+    ///     - message: The main text message of the entry in the logs.
+    ///     - details: Additional contextual data.
+    ///
+    public nonisolated func info(_ message: String, _ details: [String: Any?] = [:]) {
         Task {
             await log.write(category: category, level: .info, message: message, details: details)
         }
@@ -49,7 +57,11 @@ public actor FileProviderLogger {
     ///
     /// Dispatch a task to write a message with the level `OSLogType.error`.
     ///
-    public nonisolated func error(_ message: String, _ details: [String: String] = [:]) {
+    /// - Parameters:
+    ///     - message: The main text message of the entry in the logs.
+    ///     - details: Additional contextual data.
+    ///
+    public nonisolated func error(_ message: String, _ details: [String: Any?] = [:]) {
         Task {
             await log.write(category: category, level: .error, message: message, details: details)
         }
@@ -58,7 +70,11 @@ public actor FileProviderLogger {
     ///
     /// Dispatch a task to write a message with the level `OSLogType.fault`.
     ///
-    public nonisolated func fault(_ message: String, _ details: [String: String] = [:]) {
+    /// - Parameters:
+    ///     - message: The main text message of the entry in the logs.
+    ///     - details: Additional contextual data.
+    ///
+    public nonisolated func fault(_ message: String, _ details: [String: Any?] = [:]) {
         Task {
             await log.write(category: category, level: .fault, message: message, details: details)
         }
