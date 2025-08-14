@@ -31,7 +31,7 @@ public actor FileProviderLogger {
     ///
     /// Dispatch a task to write a message with the level `OSLogType.debug`.
     ///
-    public func debug(_ message: String) {
+    public nonisolated func debug(_ message: String) {
         Task {
             await log.write(category: category, level: .debug, message: message)
         }
@@ -40,7 +40,7 @@ public actor FileProviderLogger {
     ///
     /// Dispatch a task to write a message with the level `OSLogType.info`.
     ///
-    public func info(_ message: String) {
+    public nonisolated func info(_ message: String) {
         Task {
             await log.write(category: category, level: .info, message: message)
         }
@@ -49,7 +49,7 @@ public actor FileProviderLogger {
     ///
     /// Dispatch a task to write a message with the level `OSLogType.error`.
     ///
-    public func error(_ message: String) {
+    public nonisolated func error(_ message: String) {
         Task {
             await log.write(category: category, level: .error, message: message)
         }
@@ -58,7 +58,7 @@ public actor FileProviderLogger {
     ///
     /// Dispatch a task to write a message with the level `OSLogType.fault`.
     ///
-    public func fault(_ message: String) {
+    public nonisolated func fault(_ message: String) {
         Task {
             await log.write(category: category, level: .fault, message: message)
         }
