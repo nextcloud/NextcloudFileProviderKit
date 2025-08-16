@@ -14,8 +14,9 @@
 
 import FileProvider
 import Foundation
+import OSLog
 
-fileprivate let lfuLogger = Logger(subsystem: Logger.subsystem, category: "localfileutils")
+fileprivate let lfuLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "", category: "localfileutils")
 
 ///
 /// Resolve the path of the shared container for the app group of the file provider extension.
