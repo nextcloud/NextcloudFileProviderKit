@@ -46,22 +46,22 @@ public actor FileProviderLog {
     ///
     /// - Parameters:
     ///     - fileProviderDomainIdentifier: The raw string value of the file provider domain which this file provider extension process is managing.
-    ///     - securityApplicationGroupIdentifier: The app group the running process is part of. This is required to resolve the location to place the log files in.
     ///
-    public init(fileProviderDomainIdentifier: String, securityApplicationGroupIdentifier: String) {
+    public init(fileProviderDomainIdentifier: String) {
         self.encoder = JSONEncoder()
         self.encoder.outputFormatting = [.sortedKeys]
 
         self.formatter = DateFormatter()
 
+        let bundle = Bundle.main
 
-        self.subsystem = Bundle.main.bundleIdentifier ?? ""
+        self.subsystem = bundle.bundleIdentifier ?? ""
         self.logger = Logger(subsystem: self.subsystem, category: "FileProviderLog")
 
         let fileManager = FileManager.default
 
-        guard let container = fileManager.containerURL(forSecurityApplicationGroupIdentifier: securityApplicationGroupIdentifier) else {
-            logger.error("Failed to get container URL for security application group identifier \"\(securityApplicationGroupIdentifier, privacy: .public)\"!")
+        guard let container = pathForAppGroupContainer() else {
+            logger.error("Failed to get container URL for security application group container!")
             self.file = nil
             self.handle = nil
             return
