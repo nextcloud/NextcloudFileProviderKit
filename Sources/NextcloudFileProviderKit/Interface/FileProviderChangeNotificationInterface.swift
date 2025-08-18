@@ -10,12 +10,11 @@ import Foundation
 
 public class FileProviderChangeNotificationInterface: ChangeNotificationInterface {
     let domain: NSFileProviderDomain
-    private let logger = Logger(
-        subsystem: Logger.subsystem, category: "FileProviderChangeNotificationInterface"
-    )
+    let logger: FileProviderLogger
 
-    required init(domain: NSFileProviderDomain) {
+    required init(domain: NSFileProviderDomain, log: FileProviderLog) {
         self.domain = domain
+        logger = FileProviderLogger(category: "FileProviderChangeNotificationInterface", log: log)
     }
 
     public func notifyChange() {
@@ -24,13 +23,7 @@ public class FileProviderChangeNotificationInterface: ChangeNotificationInterfac
                 do {
                     try await manager.signalEnumerator(for: .workingSet)
                 } catch let error {
-                    self.logger.error(
-                    """
-                    Could not signal enumerator for
-                        \(self.domain.identifier.rawValue, privacy: .public):
-                        \(error.localizedDescription, privacy: .public)
-                    """
-                    )
+                    self.logger.error("Could not signal enumerator for \(self.domain.identifier.rawValue): \(error.localizedDescription)", [.domain: self.domain.identifier])
                 }
             }
         }

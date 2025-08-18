@@ -58,8 +58,8 @@ extension Enumerator {
     ) {
         Self.logger.debug(
             """
-            Starting async conversion of NKFiles for serverUrl: \(serverUrl, privacy: .public)
-                for user: \(account.ncKitAccount, privacy: .public)
+            Starting async conversion of NKFiles for serverUrl: \(serverUrl)
+                for user: \(account.ncKitAccount)
             """
         )
 
@@ -136,15 +136,15 @@ extension Enumerator {
 
         Self.logger.debug(
             """
-            Starting to read serverUrl: \(serverUrl, privacy: .public)
-                for user: \(ncKitAccount, privacy: .public)
-                at depth \(depth.rawValue, privacy: .public).
-                username: \(account.username, privacy: .public),
+            Starting to read serverUrl: \(serverUrl)
+                for user: \(ncKitAccount)
+                at depth \(depth.rawValue).
+                username: \(account.username),
                 password is empty: \(account.password == "" ? "EMPTY" : "NOT EMPTY"),
-                pageToken: \(String(data: pageSettings?.page?.rawValue ?? Data(), encoding: .utf8) ?? "NIL", privacy: .public)
-                pageIndex: \(pageSettings?.index ?? -1, privacy: .public)
-                pageSize: \(pageSettings?.size ?? -1, privacy: .public)
-                serverUrl: \(account.serverUrl, privacy: .public)
+                pageToken: \(String(data: pageSettings?.page?.rawValue ?? Data(), encoding: .utf8) ?? "NIL")
+                pageIndex: \(pageSettings?.index ?? -1)
+                pageSize: \(pageSettings?.size ?? -1)
+                serverUrl: \(account.serverUrl)
             """
         )
 
@@ -181,8 +181,8 @@ extension Enumerator {
         guard error == .success else {
             Self.logger.error(
                 """
-                \(depth.rawValue, privacy: .public) depth read of url \(serverUrl, privacy: .public)
-                did not complete successfully, error: \(error.errorDescription, privacy: .public)
+                \(depth.rawValue) depth read of url \(serverUrl)
+                did not complete successfully, error: \(error.errorDescription)
                 """
             )
             return (nil, nil, nil, nil, nil, error)
@@ -191,7 +191,7 @@ extension Enumerator {
         guard let data else {
             Self.logger.error(
                 """
-                \(depth.rawValue, privacy: .public) depth read of url \(serverUrl, privacy: .public)
+                \(depth.rawValue) depth read of url \(serverUrl)
                     did not return data.
                 """
             )
@@ -207,7 +207,7 @@ extension Enumerator {
         guard let receivedFile = files.first else {
             Self.logger.error(
                 """
-                Received no items from readFileOrFolder of \(serverUrl, privacy: .public),
+                Received no items from readFileOrFolder of \(serverUrl),
                     not much we can do...
                 """
             )
@@ -228,8 +228,8 @@ extension Enumerator {
                 Self.logger.debug(
                     """
                     Read item is a file.
-                        Converting NKfile for serverUrl: \(serverUrl, privacy: .public)
-                        for user: \(account.ncKitAccount, privacy: .public)
+                        Converting NKfile for serverUrl: \(serverUrl)
+                        for user: \(account.ncKitAccount)
                     """
                 )
                 var metadata = receivedFile.toItemMetadata()

@@ -224,7 +224,8 @@ public class Item: NSObject, NSFileProviderItem {
         account: Account,
         remoteInterface: RemoteInterface,
         dbManager: FilesDatabaseManager,
-        remoteSupportsTrash: Bool
+        remoteSupportsTrash: Bool,
+        log: FileProviderLog
     ) -> Item {
         let metadata = SendableItemMetadata(
             ocId: NSFileProviderItemIdentifier.rootContainer.rawValue,
@@ -258,7 +259,8 @@ public class Item: NSObject, NSFileProviderItem {
             account: account,
             remoteInterface: remoteInterface,
             dbManager: dbManager,
-            remoteSupportsTrash: remoteSupportsTrash
+            remoteSupportsTrash: remoteSupportsTrash,
+            log: log
         )
     }
 
@@ -266,7 +268,8 @@ public class Item: NSObject, NSFileProviderItem {
         remoteInterface: RemoteInterface,
         account: Account,
         dbManager: FilesDatabaseManager,
-        remoteSupportsTrash: Bool
+        remoteSupportsTrash: Bool,
+        log: FileProviderLog
     ) -> Item {
         let metadata = SendableItemMetadata(
             ocId: NSFileProviderItemIdentifier.trashContainer.rawValue,
@@ -299,11 +302,12 @@ public class Item: NSObject, NSFileProviderItem {
             account: account,
             remoteInterface: remoteInterface,
             dbManager: dbManager,
-            remoteSupportsTrash: remoteSupportsTrash
+            remoteSupportsTrash: remoteSupportsTrash,
+            log: log
         )
     }
 
-    static let logger = Logger(subsystem: Logger.subsystem, category: "item")
+    let logger: FileProviderLogger
 
     public required init(
         metadata: SendableItemMetadata,
@@ -311,11 +315,13 @@ public class Item: NSObject, NSFileProviderItem {
         account: Account,
         remoteInterface: RemoteInterface,
         dbManager: FilesDatabaseManager,
-        remoteSupportsTrash: Bool
+        remoteSupportsTrash: Bool,
+        log: FileProviderLog
     ) {
         self.metadata = metadata
         self.parentItemIdentifier = parentItemIdentifier
         self.account = account
+        self.logger = FileProviderLogger(category: "Item", log: log)
         self.remoteInterface = remoteInterface
         self.dbManager = dbManager
         self.remoteSupportsTrash = remoteSupportsTrash
@@ -380,7 +386,7 @@ public class Item: NSObject, NSFileProviderItem {
             Self.logger.error(
                 """
                 Unable to get local URL for item contents.
-                    filename: \(self.filename, privacy: .public)
+                    filename: \(self.filename)
                     Item is not materialised.
                 """
             )
@@ -393,7 +399,7 @@ public class Item: NSObject, NSFileProviderItem {
             Self.logger.error(
                 """
                 Unable to get manager or user visible url for item.
-                    filename: \(self.filename, privacy: .public)
+                    filename: \(self.filename)
                     Cannot provide local URL for contents.
                 """
             )
@@ -413,8 +419,8 @@ public class Item: NSObject, NSFileProviderItem {
         } catch let error {
             Self.logger.error(
                 """
-                Unable to write file item contents \(self.filename, privacy: .public) to temp url.
-                    error: \(error.localizedDescription, privacy: .public)
+                Unable to write file item contents \(self.filename) to temp url.
+                    error: \(error.localizedDescription)
                     Cannot provide local URL for contents.
                 """
             )
