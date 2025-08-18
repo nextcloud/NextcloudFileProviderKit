@@ -44,7 +44,7 @@ public func fetchThumbnails(
             ) else {
                 logger.error(
                     """
-                    Could not find item with identifier: \(itemIdentifier.rawValue, privacy: .public),
+                    Could not find item with identifier: \(itemIdentifier.rawValue),
                     unable to download thumbnail!
                     """
                 )

@@ -50,7 +50,7 @@ public func pathForFileProviderExtData() -> URL? {
 public func pathForFileProviderTempFilesForDomain(_ domain: NSFileProviderDomain) throws -> URL? {
     guard let fpManager = NSFileProviderManager(for: domain) else {
         lfuLogger.error(
-            "Unable to get file provider manager for domain: \(domain.displayName, privacy: .public)"
+            "Unable to get file provider manager for domain: \(domain.displayName)"
         )
         throw NSFileProviderError(.providerNotFound)
     }

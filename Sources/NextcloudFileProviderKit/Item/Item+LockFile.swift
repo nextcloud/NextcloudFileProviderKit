@@ -57,10 +57,10 @@ extension Item {
             uploadLogger.info(
                 """
                 Received nil capabilities data.
-                    Received error: \(capabilitiesError.errorDescription, privacy: .public)
-                    Capabilities nil: \(capabilities == nil ? "YES" : "NO", privacy: .public)
+                    Received error: \(capabilitiesError.errorDescription)
+                    Capabilities nil: \(capabilities == nil ? "YES" : "NO")
                     (if capabilities are not nil the server may just not have files_lock enabled).
-                    Will not proceed with locking for \(itemTemplate.filename, privacy: .public)
+                    Will not proceed with locking for \(itemTemplate.filename)
                 """
             )
             return (nil, nil)
@@ -69,7 +69,7 @@ extension Item {
         Self.logger.info(
             """
             Item to create:
-                \(itemTemplate.filename, privacy: .public)
+                \(itemTemplate.filename)
                 is a lock file. Will handle by remotely locking the target file.
             """
         )
@@ -79,7 +79,7 @@ extension Item {
             Self.logger.error(
                 """
                 Could not get original filename from lock file filename
-                    \(itemTemplate.filename, privacy: .public)
+                    \(itemTemplate.filename)
                     so will not lock target file.
                 """
             )
@@ -104,13 +104,13 @@ extension Item {
         if error != .success {
             Self.logger.error(
                 """
-                Failed to lock target file \(targetFileName, privacy: .public)
-                    for lock file: \(itemTemplate.filename, privacy: .public)
+                Failed to lock target file \(targetFileName)
+                    for lock file: \(itemTemplate.filename)
                     received error: \(error.errorDescription)
                 """
             )
         } else {
-            Self.logger.info("Locked file at: \(targetFileRemotePath, privacy: .public)")
+            Self.logger.info("Locked file at: \(targetFileRemotePath)")
         }
 
         let metadata = SendableItemMetadata(
@@ -177,7 +177,7 @@ extension Item {
     ) async -> (Item?, Error?) {
         Self.logger.info(
             """
-            System requested modification of lockfile \(self.filename, privacy: .public)
+            System requested modification of lockfile \(self.filename)
                 Marking as complete without syncing to server.
             """
         )
@@ -255,10 +255,10 @@ extension Item {
             uploadLogger.info(
                 """
                 Received nil capabilities data.
-                    Received error: \(capabilitiesError.errorDescription, privacy: .public)
-                    Capabilities nil: \(capabilities == nil ? "YES" : "NO", privacy: .public)
+                    Received error: \(capabilitiesError.errorDescription)
+                    Capabilities nil: \(capabilities == nil ? "YES" : "NO")
                     (if capabilities are not nil the server may just not have files_lock enabled).
-                    Will not proceed with unlocking for \(self.filename, privacy: .public)
+                    Will not proceed with unlocking for \(self.filename)
                 """
             )
             return nil
@@ -272,7 +272,7 @@ extension Item {
             Self.logger.error(
                 """
                 Could not get original filename from lock file filename
-                    \(self.metadata.fileName, privacy: .public)
+                    \(self.metadata.fileName)
                     so will not unlock target file.
                 """
             )
@@ -297,10 +297,10 @@ extension Item {
         guard error == .success else {
             Self.logger.error(
                 """
-                Could not unlock item for \(self.filename, privacy: .public)...
-                    at \(originalFileServerFileNameUrl, privacy: .public)...
-                    received error: \(error.errorCode, privacy: .public)
-                    \(error.errorDescription, privacy: .public)
+                Could not unlock item for \(self.filename)...
+                    at \(originalFileServerFileNameUrl)...
+                    received error: \(error.errorCode)
+                    \(error.errorDescription)
                 """
             )
             return error.fileProviderError(
@@ -309,8 +309,8 @@ extension Item {
         }
         Self.logger.info(
             """
-            Successfully unlocked item for: \(self.filename, privacy: .public)...
-                at: \(originalFileServerFileNameUrl, privacy: .public)
+            Successfully unlocked item for: \(self.filename)...
+                at: \(originalFileServerFileNameUrl)
             """
         )
         return nil
