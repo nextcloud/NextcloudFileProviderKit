@@ -40,12 +40,12 @@ public struct FileProviderLogMessage: Encodable {
     ///
     /// Custom initializer to support arbitrary types as detail values.
     ///
-    init(category: String, date: String, details: [String : Any?], level: String, message: String, subsystem: String) {
+    init(category: String, date: String, details: [FileProviderLogDetailKey : Any?], level: String, message: String, subsystem: String) {
         self.category = category
         self.date = date
 
         for key in details.keys {
-            self.details[key] = FileProviderLogDetail(details[key] as Any?)
+            self.details[key.rawValue] = FileProviderLogDetail(details[key] as Any?)
         }
 
         self.level = level

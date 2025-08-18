@@ -3,6 +3,11 @@ import Foundation
 ///
 /// An enum that can represent any JSON value and is `Encodable`.
 ///
+/// > To Do: Add custom encodings for:
+/// > - `FileProviderDomain`
+/// > - `FileProviderItem`
+/// > - `RealmItemMetadata`
+///
 public enum FileProviderLogDetail: Encodable {
     ///
     /// The represented detail value is a string in JSON.

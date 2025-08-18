@@ -3,7 +3,7 @@ import os
 ///
 /// A proxy type to be used by logging types which automatically augments messages with the once configured category.
 ///
-public actor FileProviderLogger {
+public struct FileProviderLogger: Sendable {
     ///
     /// The category string to be used as with the unified logging system.
     ///
@@ -35,7 +35,7 @@ public actor FileProviderLogger {
     ///     - message: The main text message of the entry in the logs.
     ///     - details: Additional contextual data.
     ///
-    public nonisolated func debug(_ message: String, _ details: [String: Any?] = [:]) {
+    public func debug(_ message: String, _ details: [FileProviderLogDetailKey: Any?] = [:]) {
         Task {
             await log.write(category: category, level: .debug, message: message, details: details)
         }
@@ -48,7 +48,7 @@ public actor FileProviderLogger {
     ///     - message: The main text message of the entry in the logs.
     ///     - details: Additional contextual data.
     ///
-    public nonisolated func info(_ message: String, _ details: [String: Any?] = [:]) {
+    public func info(_ message: String, _ details: [FileProviderLogDetailKey: Any?] = [:]) {
         Task {
             await log.write(category: category, level: .info, message: message, details: details)
         }
@@ -61,7 +61,7 @@ public actor FileProviderLogger {
     ///     - message: The main text message of the entry in the logs.
     ///     - details: Additional contextual data.
     ///
-    public nonisolated func error(_ message: String, _ details: [String: Any?] = [:]) {
+    public func error(_ message: String, _ details: [FileProviderLogDetailKey: Any?] = [:]) {
         Task {
             await log.write(category: category, level: .error, message: message, details: details)
         }
@@ -74,7 +74,7 @@ public actor FileProviderLogger {
     ///     - message: The main text message of the entry in the logs.
     ///     - details: Additional contextual data.
     ///
-    public nonisolated func fault(_ message: String, _ details: [String: Any?] = [:]) {
+    public func fault(_ message: String, _ details: [FileProviderLogDetailKey: Any?] = [:]) {
         Task {
             await log.write(category: category, level: .fault, message: message, details: details)
         }

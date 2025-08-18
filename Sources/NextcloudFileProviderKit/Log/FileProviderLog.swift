@@ -99,9 +99,9 @@ public actor FileProviderLog {
     ///
     /// Usually, you do not need or want to use this but the methods provided by ``FileProviderLogger`` instead.
     ///
-    public func write(category: String, level: OSLogType, message: String, details: [String: Any?]) {
+    public func write(category: String, level: OSLogType, message: String, details: [FileProviderLogDetailKey: Any?]) {
         let detailsDescription = details.map { key, value in
-            "\(key): \(value ?? "nil")\n"
+            "\(key.rawValue): \(value ?? "nil")\n"
         }
 
         logger.log(level: level, "\(message, privacy: .public)\n\n\(detailsDescription)")
